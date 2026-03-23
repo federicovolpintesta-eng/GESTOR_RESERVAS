@@ -1,0 +1,72 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestor de Reservas</title>
+    <link rel="stylesheet" href="{% static 'reservas/css/style.css' %}">
+</head>
+<body class="dashboard-body">
+
+    <div class="dashboard-container">
+        <div class="header-bar">
+            <div>
+                <h1>Gestor de Reservas</h1>
+                <small style="color: #a1a1aa;">Usuario: <strong>{{ user.username }}</strong></small>
+            </div>
+            <form action="{% url 'logout' %}" method="post" style="padding:0; border:none; background:none; width: auto;">
+                {% csrf_token %}
+                <button type="submit" class="btn-logout">Cerrar Sesión</button>
+            </form>
+        </div>
+
+       {% if messages %}
+            {% for message in messages %}
+                <div class="alert {{ message.tags }}" style="...">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="main-content">
+            <div class="column">
+                <h2>Recursos Disponibles</h2>
+                {% for recurso in recursos %}
+                    <div class="card">
+                        <h3 style="margin:0; font-size: 1rem;">{{ recurso.nombre }}</h3>
+                        <p style="color: #a1a1aa; font-size: 0.8rem; margin: 5px 0;">{{ recurso.descripcion }}</p>
+                        <span style="color: #38bdf8; font-size: 0.75rem;">Capacidad: {{ recurso.capacidad }} pers.</span>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="column">
+                <h2>Nueva Reserva</h2>
+                <form method="POST">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit">Confirmar Reserva</button>
+                </form>
+
+                <h2 style="margin-top: 30px;">Mis Reservas</h2>
+                {% for reserva in mis_reservas %}
+                    <div class="card" style="display: flex; justify-content: space-between; align-items: center; border-left: 3px solid #38bdf8;">
+                        <div>
+                            <strong style="font-size: 0.9rem;">{{ reserva.recurso.nombre }}</strong><br>
+                            <small style="color: #a1a1aa;">{{ reserva.inicio|date:"d/m H:i" }} hasta {{ reserva.fin|date:"H:i" }}</small>
+                        </div>
+                        <a href="{% url 'eliminar_reserva' reserva.pk %}" 
+                           onclick="return confirm('¿Seguro quieres cancelar?')"
+                           style="color: #f87171; text-decoration: none; font-size: 0.7rem; font-weight: bold;">
+                           ELIMINAR
+                        </a>
+                    </div>
+                {% empty %}
+                    <p style="color: #555; font-size: 0.9rem;">No tienes reservas activas.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,23 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{% static 'reservas/css/style.css' %}">
+    <title>Login | Gestor de Reservas</title>
+</head>
+<body class="login-body">
+    <div class="login-card">
+        <h2>IDENTIFICACIÓN</h2>
+        <form method="post">
+            {% csrf_token %}
+            {% if form.errors %}
+                <p class="error">Usuario o clave incorrectos</p>
+            {% endif %}
+            <input type="text" name="username" placeholder="Usuario" required>
+            <input type="password" name="password" placeholder="Contraseña" required>
+            <button type="submit">ENTRAR</button>
+        </form>
+    </div>
+</body>
+</html>
